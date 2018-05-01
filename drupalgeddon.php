@@ -34,12 +34,16 @@
 	);
 
 	function getVersion($target){
-        $response_header = get_headers($target, true);
-		if(isset($response_header['X-Generator'])){
-			if(strpos($response_header['X-Generator'], '8')){
-				return 8;
-			}elseif(strpos($response_header['X-Generator'], '7')){
-				return 7;
+		$response_header = get_headers($target, true);
+		$response_header = $response_header !== false ? array_change_key_case($response_header, CASE_LOWER) : false;
+		if($response_header !== false && isset($response_header['x-generator'])){
+			$x_generator = explode(chr(32), $response_header['x-generator']);
+			if(strtolower($x_generator[0]) === 'drupal'){
+				if($x_generator[1] == '8'){
+					return 8;
+				}elseif($x_generator[1] == '7'){
+					return 7;
+				}
 			}
 		}
 		return false;
